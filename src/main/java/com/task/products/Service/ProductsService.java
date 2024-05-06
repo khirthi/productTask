@@ -1,18 +1,15 @@
 package com.task.products.Service;
 
-import com.task.products.DTO.GetProductIdDto;
 import com.task.products.Entity.Products;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductsService {
-    int createProduct(Object requestModel);
-
-    int updateProductQuantity(Object requestModel);
-
-    int deleteProduct(Object requestModel);
-
     List<Products> getAllProducts();
-
-    Products getProductById(Object requestModel);
+    Optional<Products> getProductById(Object requestModel);
+    Products createProduct(Object requestModel) throws SQLException;
+    Products updateProduct(Object requestModel);
+    void deleteProduct(Object requestModel);
 }

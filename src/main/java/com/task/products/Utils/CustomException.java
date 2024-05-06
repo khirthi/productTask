@@ -11,7 +11,6 @@ public class CustomException extends RuntimeException {
 
     @Serial
 	private static final long serialVersionUID = 1L;
-
     private int statusCode;
     private Object[] params;
 
