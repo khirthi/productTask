@@ -4,10 +4,8 @@ import com.task.products.Entity.Products;
 import com.task.products.Repository.ProductsRepo;
 import com.task.products.Utils.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,26 +20,22 @@ public class ProductsServiceImpl implements ProductsService {
         return productsRepo.findAll();
     }
     @Override
-    public Optional<Products> getProductById(Object requestModel) {
-        int productId = (int) requestModel;
-        return productsRepo.findById(productId);
+    public Optional<Products> getProductById(int productId) {
+        Optional<Products> response = Optional.empty();
+        response = productsRepo.findById(productId);
+        return response;
     }
     @Override
-    public Products createProduct(Object requestModel) {
-        Products products = (Products) requestModel;
-        Products result;
-        result = productsRepo.save(products);
-        return result;
+    public void createProduct(Products products) {
+        productsRepo.save(products);
     }
 
     @Override
-    public Products updateProduct(Object requestModel) {
-        Products products = (Products) requestModel;
+    public Products updateProduct(Products products) {
         return productsRepo.save(products);
     }
     @Override
-    public void deleteProduct(Object requestModel) {
-        int productId = (int) requestModel;
+    public void deleteProduct(int productId) {
         productsRepo.deleteById(productId);
     }
 

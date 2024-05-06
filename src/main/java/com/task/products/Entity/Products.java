@@ -9,6 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 @Data
 @Entity
 public class Products {
@@ -17,8 +21,17 @@ public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotBlank(message = "Type is required")
     private String type;
+
+    @NotBlank(message = "Name is required")
+    @Size(max = 100, message = "name must be less than or equal to 100 characters")
     private String name;
+
+    @NotBlank(message = "quantity is required")
     private int quantity;
+
+    @NotBlank(message = "price is required")
     private int price;
 }
