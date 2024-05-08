@@ -2,7 +2,6 @@ package com.task.products.Service;
 
 import com.task.products.Entity.Products;
 import com.task.products.Repository.ProductsRepo;
-import com.task.products.Utils.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

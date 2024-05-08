@@ -4,10 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +12,8 @@ import javax.validation.constraints.Size;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Products {
 
     //id (primary key), type, name, quantity, price
