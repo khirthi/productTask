@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductsServiceTest {
-
     @InjectMocks
-    ProductsService productsServiceMock;
+    ProductsService productsServiceMock = new ProductsServiceImpl();
+
+    @Test
+    void getProductById() {
 
 
-
+        Products product1 = new Products();
+        product1.setId(1);
+        product1.setType("TOYS");
+        product1.setName("Bat");
+        product1.setQuantity(50);
+        product1.setPrice(400);
+    }
 
 }

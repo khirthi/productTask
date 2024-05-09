@@ -4,37 +4,29 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Products {
+public class SalesPersons {
 
-    //id (primary key), type, name, quantity, price
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @NotBlank(message = "Type is required")
-    private String type;
 
     @NotBlank(message = "Name is required")
     @Size(max = 100, message = "name must be less than or equal to 100 characters")
     private String name;
 
-    @NotBlank(message = "quantity is required")
-    private int quantity;
+    @NotBlank(message = "phone number is required")
+    private String phoneNumber;
 
-    @NotBlank(message = "price is required")
-    private int price;
-
-    @NotBlank (message = "expiry date cannot be null")
-    private Date expiryDate;
+    private int noOfOrders;
 }

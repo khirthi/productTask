@@ -1,6 +1,8 @@
 package com.task.products.Controller;
 
 import com.task.products.Entity.Products;
+import com.task.products.Repository.ProductsRepo;
+import com.task.products.Service.ProductsService;
 import com.task.products.Service.ProductsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.BDDAssumptions.given;
@@ -23,9 +26,9 @@ import static org.mockito.Mockito.when;
 public class ProductsControllerTest {
 
     @Mock
-    private ProductsServiceImpl productsServiceImplMock;
+    private ProductsRepo productsRepo;
     @InjectMocks
-    private ProductsController productsController;
+    private ProductsService productsService = new ProductsServiceImpl();
 
     @Test
     public void returnAllProducts() {
@@ -46,13 +49,10 @@ public class ProductsControllerTest {
 
         Products[] allProducts = new Products[]{product1, product2};
 
-        when(productsServiceImplMock.getAllProducts()).thenReturn(List.of(allProducts));
-        assertEquals(2, productsServiceImplMock.getAllProducts().size());
+        when(productsService.getAllProducts()).thenReturn(List.of(allProducts));
+        assertEquals(2, productsService.getAllProducts().size());
 
-        given(productsController.getAllProduct()).isSameAs(allProducts);
-
-        ResponseEntity<?> response = productsController.getAllProduct();
-
+        List<Products> response = productsService.getAllProducts();
         assertNotNull(response);
         assertNotNull(allProducts);
         assertEquals(2, allProducts.length);
@@ -68,12 +68,9 @@ public class ProductsControllerTest {
         product1.setQuantity(50);
         product1.setPrice(400);
 
-
-
-        ResponseEntity<?> product = productsController.getProductById(product1.getId());
-        System.out.println(product.getStatusCode());
-        System.out.println(product.getHeaders());
-        System.out.println(product.getBody());
+        Optional<Products> response = productsService.getProductById(0);
+        assertNotNull(response);
+        assertEquals("Bat", product1.getName());
 
         //assertThat(product.getBody()).isEqualTo(product1.getName());
     }
