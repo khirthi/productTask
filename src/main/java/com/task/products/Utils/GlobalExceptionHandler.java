@@ -15,4 +15,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<String> handleCustomException(CustomException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

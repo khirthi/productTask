@@ -9,6 +9,7 @@ import lombok.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -36,5 +37,5 @@ public class Products {
     private int price;
 
     @NotBlank (message = "expiry date cannot be null")
-    private Date expiryDate;
+    private Date productExpiry;
 }

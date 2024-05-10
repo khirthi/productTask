@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -28,8 +29,11 @@ public class Orders {
     @NotBlank(message = "SalesPersonId is required")
     private int salesPersonIncharge;
 
+    @NotBlank(message = "ProductId is required")
+    private int productId;
+
     @NotBlank(message = "orderValue is required")
-    private String orderValue;
+    private BigDecimal orderValue;
 
     @NotBlank(message = "OrderPlacedOn is required")
     private Date orderPlacedOn;
