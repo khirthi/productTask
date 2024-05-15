@@ -1,43 +1,48 @@
 package com.task.products.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
-@Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank(message = "CustomerId is required")
-    private int orderPlacedByCustomer;
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "order_placed_by_customer")
+    private Customers orderPlacedByCustomer;
 
-    @NotBlank(message = "SalesPersonId is required")
-    private int salesPersonIncharge;
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "sales_person_incharge")
+    private SalesPerson salesPersonIncharge;
 
-    @NotBlank(message = "ProductId is required")
-    private int productId;
-
-    @NotBlank(message = "orderValue is required")
+    @Column(nullable = false)
     private BigDecimal orderValue;
 
-    @NotBlank(message = "OrderPlacedOn is required")
+    @Column(nullable = false)
     private Date orderPlacedOn;
 
-    @NotBlank(message = "Status cannot be null")
+    @Column(nullable = false)
     private String status;
+
+    @OneToMany(mappedBy = "orders")
+    private List<OrderProduct> orderProducts;
+
+    public Orders(int customerId, int salesPersonId, BigDecimal orderValue, Date orderPlacedOn, String status) {
+    }
 }

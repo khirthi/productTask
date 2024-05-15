@@ -5,6 +5,7 @@ import com.task.products.Entity.SalesPerson;
 import com.task.products.Repository.SalesPersonRepo;
 import com.task.products.Utils.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Month;
@@ -13,6 +14,8 @@ import java.util.Optional;
 
 @Service
 public class SalesPersonServiceImpl implements SalesPersonService{
+
+
 
     @Autowired
     SalesPersonRepo salesPersonRepo;
@@ -38,7 +41,6 @@ public class SalesPersonServiceImpl implements SalesPersonService{
             Month month = Month.valueOf(monthName.toUpperCase());
             int monthNumber = month.getValue();
             response = salesPersonRepo.getTotalSalesByIdForMonth(salesPersonId, monthNumber);
-            System.out.println(response);
         }
         catch (IllegalArgumentException e) {
             throw new CustomException("Please enter valid month name", 400);

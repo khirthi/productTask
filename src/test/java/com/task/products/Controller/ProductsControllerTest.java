@@ -25,8 +25,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ProductsControllerTest {
 
-    @Mock
-    private ProductsRepo productsRepo;
     @InjectMocks
     private ProductsService productsService = new ProductsServiceImpl();
 

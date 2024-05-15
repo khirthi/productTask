@@ -1,7 +1,7 @@
 package com.task.products.Service;
 
-import com.task.products.Entity.Orders;
+import com.task.products.DTO.GetOrderInfoDto;
 
 public interface OrderService {
-    void addOrder (Orders order);
+    void addOrder (GetOrderInfoDto orderInfo);
 }

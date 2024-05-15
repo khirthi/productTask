@@ -22,8 +22,11 @@ public class BillReceipts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank(message = "orderPlacedByOrders is required")
-    private int orderPlacedByOrders;
+    @NotBlank(message = "orderId is required")
+    private int orderId;
+
+    @NotBlank(message = "placedByCustomer is required")
+    private int placedByCustomer;
 
     @NotBlank(message = "salesPersonIncharge is required")
     private int salesPersonIncharge;

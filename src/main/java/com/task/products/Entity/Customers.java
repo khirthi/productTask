@@ -1,20 +1,17 @@
 package com.task.products.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
-@Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Customers {
 
     @Id
@@ -31,6 +28,7 @@ public class Customers {
     @NotBlank(message = "address is required")
     private String address;
 
-    private int totalNoOfOrders;
+    @OneToMany(mappedBy = "orderPlacedByCustomer")
+    private List<Orders> orders;
 
 }

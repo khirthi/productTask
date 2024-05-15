@@ -25,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductsServiceTest {
-    @InjectMocks
-    ProductsService productsServiceMock = new ProductsServiceImpl();
 
     @Test
     void getProductById() {

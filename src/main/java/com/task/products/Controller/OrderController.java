@@ -1,6 +1,6 @@
 package com.task.products.Controller;
 
-import com.task.products.Entity.Orders;
+import com.task.products.DTO.GetOrderInfoDto;
 import com.task.products.Service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,18 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("orders")
+
+// customers can have multiple orders,
+// sales person can be in multiple orders
+
 public class OrderController {
     //make new order by adding product. before adding product, check if product is expired or not
     @Autowired
     OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<?> addOrder(@RequestBody @Valid Orders order) {
-        orderService.addOrder(order);
+    public ResponseEntity<?> addOrder(@RequestBody @Valid GetOrderInfoDto orderInfo) {
+        orderService.addOrder(orderInfo);
         return ResponseEntity.noContent().build();
     }
 

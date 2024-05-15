@@ -27,7 +27,7 @@ public class ProductsController {
     public ResponseEntity<?> getAllProduct() {
         List<Products> result = productsService.getAllProducts();
         if (result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("users not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("products not found");
         } else {
             return ResponseEntity.ok(result);
         }
@@ -37,7 +37,7 @@ public class ProductsController {
     public ResponseEntity<?> getProductById(@PathVariable("id") int productId) {
         Optional<Products> result = productsService.getProductById(productId);
         if (result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found, check id");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("product not found, check id");
         } else {
             return ResponseEntity.ok(result);
         }

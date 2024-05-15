@@ -1,9 +1,6 @@
 package com.task.products.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -11,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -38,4 +36,7 @@ public class Products {
 
     @NotBlank (message = "expiry date cannot be null")
     private Date productExpiry;
+
+//    @OneToMany(mappedBy = "products")
+//    private List<OrderProduct> orderProducts;
 }

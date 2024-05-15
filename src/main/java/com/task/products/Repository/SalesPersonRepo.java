@@ -16,44 +16,24 @@ import java.util.Optional;
 @Repository
 public interface SalesPersonRepo extends JpaRepository<SalesPerson, Integer> {
 
-    @Query("SELECT " +
-            "new com.task.products.DTO.GetTotalSalesInfoDto(" +
-            "   s.id AS salesPersonId, " +
-            "   s.name AS salesPersonName, " +
-            "   COUNT(o.id) AS countOfSales, " +
-            "   SUM(o.orderValue) AS sumOfOrderValue) " +
+    @Query("SELECT new com.task.products.DTO.GetTotalSalesInfoDto(" +
+            "       s.id AS salesPersonId, " +
+            "       s.name AS salesPersonName, " +
+            "       COUNT(o.id) AS countOfSales, " +
+            "       SUM(o.orderValue) AS sumOfOrderValue) " +
             "FROM SalesPerson s " +
-            "LEFT JOIN Orders o ON s.id = o.salesPersonIncharge " +
+            "LEFT JOIN Orders o ON s.id = o.salesPersonIncharge.id " +
             "GROUP BY s.id, s.name")
     List<GetTotalSalesInfoDto> getTotalSalesInfo();
 
-//    @Query("SELECT  " +
-//            "new com.task.products.DTO.GetTotalSalesInfoDto(" +
-//            "    s.id AS salesPersonId, " +
-//            "    s.name AS salesPersonName, " +
-//            "    COUNT(o.id) AS countOfSales, " +
-//            "    SUM(o.orderValue) AS sumOfOrderValue) " +
-//            "FROM  " +
-//            "    SalesPerson s " +
-//            "LEFT JOIN  " +
-//            "    Orders o ON s.id = o.salesPersonIncharge " +
-//            "WHERE  " +
-//            "    s.id = :salesPersonId  " +
-//            "    AND MONTH(o.orderPlacedOn) = :monthNumber " +
-//            "GROUP BY  " +
-//            "    s.id, s.name")
-//    Optional<GetTotalSalesInfoDto> getTotalSalesByIdForMonth(@Param("salesPersonId") int salesPersonId, @Param("monthNumber") int monthNumber);
-
-    @Query("SELECT  " +
-            "new com.task.products.DTO.GetTotalSalesInfoDto(" +
+    @Query("SELECT new com.task.products.DTO.GetTotalSalesInfoDto(" +
             "    s.id AS salesPersonId, " +
             "    s.name AS salesPersonName, " +
             "    COUNT(o.id) AS countOfSales, " +
             "    SUM(o.orderValue) AS sumOfOrderValue) " +
             "FROM  " +
             "    SalesPerson s " +
-            "LEFT JOIN  " +
-            "    Orders o ON s.id = o.salesPersonIncharge " +
+            "LEFT JOIN Orders o ON s.id = o.salesPersonIncharge.id " +
             "WHERE  " +
             "    s.id = :salesPersonId  " +
             "    AND MONTH(o.orderPlacedOn) = :monthNumber " +
