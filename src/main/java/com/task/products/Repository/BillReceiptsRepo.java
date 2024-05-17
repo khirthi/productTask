@@ -27,6 +27,6 @@ public interface BillReceiptsRepo extends JpaRepository<BillReceipts, Integer> {
             "    SalesPerson sp ON o.salesPersonIncharge.id = sp.id " +
             "WHERE " +
             "    o.id = :orderId")
-    List<GetBillReceiptsForOrderIdDto> getBillReceiptOfOrder(@Param("orderId") int orderId);
+    Optional<GetBillReceiptsForOrderIdDto> getBillReceiptOfOrder(@Param("orderId") int orderId);
 
 }

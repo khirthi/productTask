@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +17,6 @@ public class GetOrderInfoDto {
 
     private int orderPlacedByCustomer;
     private int salesPersonIncharge;
-    private Date orderPlacedOn;
     private String status;
-    private String productId;
+    private List<OrderItemDto> orderItems;
 }

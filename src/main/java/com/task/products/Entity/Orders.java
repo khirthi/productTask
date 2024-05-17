@@ -42,7 +42,4 @@ public class Orders {
 
     @OneToMany(mappedBy = "orders")
     private List<OrderProduct> orderProducts;
-
-    public Orders(int customerId, int salesPersonId, BigDecimal orderValue, Date orderPlacedOn, String status) {
-    }
 }

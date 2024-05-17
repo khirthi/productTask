@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BillReceiptsService {
-    List<GetBillReceiptsForOrderIdDto> getBillReceiptOfOrder(int orderId);
+    Optional<GetBillReceiptsForOrderIdDto> getBillReceiptOfOrder(int orderId);
 }

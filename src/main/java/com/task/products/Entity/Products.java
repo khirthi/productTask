@@ -36,7 +36,4 @@ public class Products {
 
     @NotBlank (message = "expiry date cannot be null")
     private Date productExpiry;
-
-//    @OneToMany(mappedBy = "products")
-//    private List<OrderProduct> orderProducts;
 }

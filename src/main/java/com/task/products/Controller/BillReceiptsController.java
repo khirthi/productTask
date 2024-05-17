@@ -3,6 +3,7 @@ package com.task.products.Controller;
 import com.task.products.DTO.GetBillReceiptsForOrderIdDto;
 import com.task.products.Entity.BillReceipts;
 import com.task.products.Entity.Products;
+import com.task.products.Mappers.BillReceiptsMapper;
 import com.task.products.Service.BillReceiptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,8 @@ public class BillReceiptsController {
     BillReceiptsService billReceiptsService;
     @GetMapping("/{orderId}")
     public ResponseEntity<?> getBillReceiptOfOrder(@PathVariable("orderId") int orderId) {
-        List<GetBillReceiptsForOrderIdDto> result = billReceiptsService.getBillReceiptOfOrder(orderId);
-        if (result.isEmpty()){
+        Optional<GetBillReceiptsForOrderIdDto> result = billReceiptsService.getBillReceiptOfOrder(orderId);
+        if (result.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("order not found, check order_id");
         } else {
             return ResponseEntity.ok(result);

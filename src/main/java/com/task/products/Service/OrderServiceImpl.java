@@ -1,16 +1,21 @@
 package com.task.products.Service;
 
 import com.task.products.DTO.GetOrderInfoDto;
+import com.task.products.DTO.OrderItemDto;
 import com.task.products.Entity.*;
 import com.task.products.Repository.BillReceiptsRepo;
 import com.task.products.Repository.OrderProductRepo;
 import com.task.products.Repository.OrderRepo;
 import com.task.products.Utils.CustomException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +36,7 @@ public class OrderServiceImpl implements  OrderService{
     BillReceiptsRepo billReceiptsRepo;
 
 
+    @Transactional
     @Override
     public void addOrder(GetOrderInfoDto orderInfo) {
 
@@ -40,21 +46,21 @@ public class OrderServiceImpl implements  OrderService{
         Optional<Customers> customerInfo = customerService.getCustomerById(customerId);
         Optional<SalesPerson> salesPersonInfo = salesPersonService.getSalesPersonById(salesPersonId);
 
-        String[] productIdArray = orderInfo.getProductId().split(",");
-
-        List<Integer> productIdList = new ArrayList<>();
-        for (String productIdStr : productIdArray) {
-            productIdList.add(Integer.parseInt(productIdStr));
-        }
-
+        List<OrderItemDto> orderedItems = orderInfo.getOrderItems();
         int orderValue = 0;
 
-        for (int i: productIdList) {
-            Optional<Products> productInfo = productsService.getProductById(i);
-            if (productInfo.isEmpty()) {
-                throw new CustomException("product with id " +i+ " doesn't exist.", 404);
+        for (OrderItemDto orderItem : orderedItems) {
+            int productId = orderItem.getProductId();
+            int quantity = orderItem.getQuantity();
+            Optional<Products> productInfo = productsService.getProductById(productId);
+            Products product = productInfo.get();
+
+            // Check if quantity is lesser than value in DB
+            if (quantity >  product.getQuantity()) {
+                throw new CustomException("Only " + product.getQuantity() + " nos of product with id "
+                        + productId+" is available.", 400);
             }
-            orderValue += productInfo.get().getPrice();
+            orderValue += (product.getPrice()*quantity);
         }
 
         if (customerInfo.isEmpty()) {
@@ -73,22 +79,31 @@ public class OrderServiceImpl implements  OrderService{
         order.setOrderValue(BigDecimal.valueOf(orderValue));
         order.setStatus(orderInfo.getStatus());
         order.setSalesPersonIncharge(salesPerson);
-        order.setOrderPlacedOn(orderInfo.getOrderPlacedOn());
+        order.setOrderPlacedOn(Date.from(Instant.now()));
 
         orderRepo.save(order);
-        for (int i: productIdList) {
+
+        for (OrderItemDto orderItem: orderedItems) {
+            int productId = orderItem.getProductId();
+            int quantity = orderItem.getQuantity();
+
+            Products product = productsService.getProductById(productId).orElse(null);
+            int previousProductQuantity = product.getQuantity();
+            product.setQuantity(previousProductQuantity - quantity);
+            productsService.updateProduct(product);
+
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setOrders(order);
-            Optional<Products> productInfo = productsService.getProductById(i);
+            Optional<Products> productInfo = productsService.getProductById(productId);
             orderProduct.setProducts(productInfo.get());
             orderProductRepo.save(orderProduct);
         }
 
         BillReceipts billReceipt = new BillReceipts();
-        billReceipt.setOrderId(order.getId());
-        billReceipt.setSalesPersonIncharge(salesPersonId);
-        billReceipt.setPlacedByCustomer(customerId);
-        billReceipt.setOrderPlacedOn(orderInfo.getOrderPlacedOn());
+        billReceipt.setOrderId(order);
+        billReceipt.setSalesPersonIncharge(salesPerson);
+        billReceipt.setPlacedByCustomer(customer);
+        billReceipt.setOrderPlacedOn(Date.from(Instant.now()));
         billReceipt.setOrderValue(BigDecimal.valueOf(orderValue));
 
         billReceiptsRepo.save(billReceipt);

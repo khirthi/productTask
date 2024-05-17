@@ -1,12 +1,15 @@
 package com.task.products.Service;
 
+import com.task.products.DTO.ProductDto;
 import com.task.products.Entity.Products;
+import com.task.products.Mappers.ProductMapper;
 import com.task.products.Repository.ProductsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductsServiceImpl implements ProductsService {
@@ -15,15 +18,16 @@ public class ProductsServiceImpl implements ProductsService {
     ProductsRepo productsRepo;
 
     @Override
-    public List<Products> getAllProducts() {
-        List<Products> response = productsRepo.findAll();
-        return productsRepo.findAll();
+    public List<ProductDto> getAllProducts() {
+        List<Products> products = productsRepo.findAll();
+        return products.stream()
+                .map(ProductMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
     }
+
     @Override
     public Optional<Products> getProductById(int productId) {
-        Optional<Products> response = Optional.empty();
-        response = productsRepo.findById(productId);
-        return response;
+        return productsRepo.findById(productId);
     }
     @Override
     public void createProduct(Products products) {

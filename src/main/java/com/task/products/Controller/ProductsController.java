@@ -1,6 +1,8 @@
 package com.task.products.Controller;
 
+import com.task.products.DTO.ProductDto;
 import com.task.products.Entity.Products;
+import com.task.products.Mappers.ProductMapper;
 import com.task.products.Service.ProductsService;
 import com.task.products.Service.ProductsServiceImpl;
 import com.task.products.Utils.CustomException;
@@ -25,7 +27,7 @@ public class ProductsController {
 
     @GetMapping()
     public ResponseEntity<?> getAllProduct() {
-        List<Products> result = productsService.getAllProducts();
+        List<ProductDto> result = productsService.getAllProducts();
         if (result.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("products not found");
         } else {
@@ -35,11 +37,12 @@ public class ProductsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") int productId) {
-        Optional<Products> result = productsService.getProductById(productId);
-        if (result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("product not found, check id");
-        } else {
+        Optional<Products> product = productsService.getProductById(productId);
+        if (product.isPresent()) {
+            ProductDto result = ProductMapper.INSTANCE.toDto(product.get());
             return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found, check id");
         }
     }
 

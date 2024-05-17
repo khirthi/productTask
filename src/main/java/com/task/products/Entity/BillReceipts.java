@@ -1,9 +1,6 @@
 package com.task.products.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,18 +19,21 @@ public class BillReceipts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank(message = "orderId is required")
-    private int orderId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Orders orderId;
 
-    @NotBlank(message = "placedByCustomer is required")
-    private int placedByCustomer;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "placed_by_customer", nullable = false)
+    private Customers placedByCustomer;
 
-    @NotBlank(message = "salesPersonIncharge is required")
-    private int salesPersonIncharge;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "sales_person_incharge", nullable = false)
+    private SalesPerson salesPersonIncharge;
 
-    @NotBlank(message = "orderValue is required")
+    @Column(nullable = false)
     private BigDecimal orderValue;
 
-    @NotBlank(message = "orderPlacedOn is required")
+    @Column(nullable = false)
     private Date orderPlacedOn;
 }
