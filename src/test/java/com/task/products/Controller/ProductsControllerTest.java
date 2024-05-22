@@ -1,5 +1,6 @@
 package com.task.products.Controller;
 
+import com.task.products.DTO.ProductDto;
 import com.task.products.Entity.Products;
 import com.task.products.Repository.ProductsRepo;
 import com.task.products.Service.ProductsService;
@@ -47,10 +48,10 @@ public class ProductsControllerTest {
 
         Products[] allProducts = new Products[]{product1, product2};
 
-        when(productsService.getAllProducts()).thenReturn(List.of(allProducts));
+        when(productsService.getAllProducts()).thenReturn(List.<ProductDto>of());
         assertEquals(2, productsService.getAllProducts().size());
 
-        List<Products> response = productsService.getAllProducts();
+        List<ProductDto> response = productsService.getAllProducts();
         assertNotNull(response);
         assertNotNull(allProducts);
         assertEquals(2, allProducts.length);
