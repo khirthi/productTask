@@ -1,77 +1,169 @@
 package com.task.products.Controller;
 
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.task.products.DTO.ProductDto;
 import com.task.products.Entity.Products;
-import com.task.products.Repository.ProductsRepo;
+import com.task.products.Mappers.ProductMapper;
 import com.task.products.Service.ProductsService;
-import com.task.products.Service.ProductsServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.BDDAssumptions.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-@ExtendWith(MockitoExtension.class)
 public class ProductsControllerTest {
 
+    //set up
+    //action
+    //assertion
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Mock
+    private ProductsService productsService;
+
     @InjectMocks
-    private ProductsService productsService = new ProductsServiceImpl();
+    private ProductsController productsController;
 
-    @Test
-    public void returnAllProducts() {
+    private Products product;
+    private ProductDto productDto;
 
-        Products product1 = new Products();
-        product1.setId(1);
-        product1.setType("TOYS");
-        product1.setName("Bat");
-        product1.setQuantity(50);
-        product1.setPrice(400);
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
 
-        Products product2 = new Products();
-        product2.setId(2);
-        product2.setType("ELECTRONICS");
-        product2.setName("Mobile");
-        product2.setQuantity(50);
-        product2.setPrice(400);
+        product = new Products();
+        product.setId(1);
+        product.setType("Electronics");
+        product.setName("Laptop");
+        product.setQuantity(10);
+        product.setPrice(1000);
+        product.setProductExpiry(new Date());
 
-        Products[] allProducts = new Products[]{product1, product2};
+        productDto = ProductMapper.INSTANCE.toDto(product);
 
-        when(productsService.getAllProducts()).thenReturn(List.<ProductDto>of());
-        assertEquals(2, productsService.getAllProducts().size());
-
-        List<ProductDto> response = productsService.getAllProducts();
-        assertNotNull(response);
-        assertNotNull(allProducts);
-        assertEquals(2, allProducts.length);
+        mockMvc = MockMvcBuilders.standaloneSetup(productsController).build();
     }
 
-    @Test
-    void testGetProductById() {
+    @Nested
+    @DisplayName("GET /product")
+    class GetAllProductsTests {
 
-        Products product1 = new Products();
-        product1.setId(1);
-        product1.setType("TOYS");
-        product1.setName("Bat");
-        product1.setQuantity(50);
-        product1.setPrice(400);
+        @Test
+        @DisplayName("Test getting all products successfully")
+        public void testGetAllProduct() throws Exception {
+            when(productsService.getAllProducts()).thenReturn(Arrays.asList(productDto));
 
-        Optional<Products> response = productsService.getProductById(0);
-        assertNotNull(response);
-        assertEquals("Bat", product1.getName());
+            mockMvc.perform(get("/product"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1))
+                    .andExpect(jsonPath("$[0].name").value("Laptop"));
+        }
 
-        //assertThat(product.getBody()).isEqualTo(product1.getName());
+        @Test
+        @DisplayName("Test getting all products when no products found")
+        public void testGetAllProductsThrowsErrorWhenNoProducts() throws Exception {
+            when(productsService.getAllProducts()).thenReturn(Collections.emptyList());
+
+            mockMvc.perform(get("/product"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string("products not found"));
+        }
     }
 
+    @Nested
+    @DisplayName("GET /product/{id}")
+    class GetProductByIdTests {
+
+        @Test
+        @DisplayName("Test getting a product by ID successfully")
+        public void testGetProductById() throws Exception {
+            when(productsService.getProductById(1)).thenReturn(Optional.of(product));
+
+            mockMvc.perform(get("/product/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value("Laptop"));
+        }
+
+        @Test
+        @DisplayName("Test getting a product by ID when not found")
+        public void testGetProductByIdNotFound() throws Exception {
+            when(productsService.getProductById(1)).thenReturn(Optional.empty());
+
+            mockMvc.perform(get("/product/1"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string("Product not found, check id"));
+        }
+    }
+
+
+    @Nested
+    @DisplayName("POST /product")
+    class CreateProductTests {
+
+        @Test
+        @DisplayName("Test creating a product successfully")
+        public void testCreateProduct() throws Exception {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String productJson = objectMapper.writeValueAsString(product);
+
+            doNothing().when(productsService).createProduct(any(Products.class));
+
+            mockMvc.perform(post("/product")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(productJson))
+                    .andExpect(status().isNoContent());
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /product")
+    class UpdateProductTests {
+
+        @Test
+        @DisplayName("Test updating a product successfully")
+        public void testUpdateProduct() throws Exception {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String productJson = objectMapper.writeValueAsString(product);
+
+            when(productsService.updateProduct(any(Products.class))).thenReturn(product);
+
+            mockMvc.perform(put("/product")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(productJson))
+                    .andExpect(status().isNoContent());
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /product/{id}")
+    class DeleteProductTests {
+
+        @Test
+        @DisplayName("Test deleting a product successfully")
+        public void testDeleteProduct() throws Exception {
+            doNothing().when(productsService).deleteProduct(1);
+
+            mockMvc.perform(delete("/product/1"))
+                    .andExpect(status().isNoContent());
+        }
+    }
 }
