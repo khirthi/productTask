@@ -4,38 +4,35 @@ import com.task.products.DTO.ProductDto;
 import com.task.products.Entity.Products;
 import com.task.products.Mappers.ProductMapper;
 import com.task.products.Service.ProductsService;
-import com.task.products.Service.ProductsServiceImpl;
-import com.task.products.Utils.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("product")
+@RequestMapping("/product")
 public class ProductsController {
 
     @Autowired
-    ProductsService productsService;
+    private ProductsService productsService;
 
-    @GetMapping()
-    public ResponseEntity<?> getAllProduct() {
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
         List<ProductDto> result = productsService.getAllProducts();
-        if (result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("products not found");
+        if (result.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         } else {
             return ResponseEntity.ok(result);
         }
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDOR', 'CUSTOMER')")
     public ResponseEntity<?> getProductById(@PathVariable("id") int productId) {
         Optional<Products> product = productsService.getProductById(productId);
         if (product.isPresent()) {
@@ -46,19 +43,23 @@ public class ProductsController {
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<?> createProduct(@RequestBody @Valid Products products) {
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> createProduct(@RequestBody @Valid Products products) {
         productsService.createProduct(products);
         return ResponseEntity.noContent().build();
     }
-    @PutMapping()
-    public ResponseEntity<?> updateProduct(@RequestBody @Valid Products products){
+
+    @PutMapping
+    @PreAuthorize("hasRole('VENDOR')")
+    public ResponseEntity<Void> updateProduct(@RequestBody @Valid Products products) {
         productsService.updateProduct(products);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("id") int id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") int id) {
         productsService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

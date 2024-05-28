@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 
+@DisplayName("Products Controller Tests")
 public class ProductsControllerTest {
 
     //set up

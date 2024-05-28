@@ -1,5 +1,6 @@
 package com.task.products.Entity;
 
+import com.task.products.Utils.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,4 +28,7 @@ public class SalesPerson {
 
     @OneToMany(mappedBy = "salesPersonIncharge")
     private List<Orders> orders;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
